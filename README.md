@@ -2,6 +2,8 @@
 
 [FinalShell激活码完整版](https://github.com/xymn2023/finalunlock-all)
 
+[Demo](@FinalUnlock_bot)
+
 ## 📋 项目简介
 
 FinalUnlock是一个基于Python的Telegram机器人，专门用于生成FinalShell激活码。采用极简设计，一键安装，开机自启，7×24小时稳定运行。
@@ -174,6 +176,12 @@ MIT License - 自由使用，修改和分发
 ---
 
 
+## Star History
+
+[![Star History Chart](https://api.star-history.com/svg?repos=komari-monitor/komari,xymn2023/FinalUnlock&type=Date)](https://www.star-history.com/#komari-monitor/komari&xymn2023/FinalUnlock&Date)
+
+
 **🎉 享受简单高效的FinalShell激活码生成体验！**
+
 
 
