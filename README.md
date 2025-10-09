@@ -2,7 +2,7 @@
 
 [FinalShell激活码完整版](https://github.com/xymn2023/finalunlock-all)
 
-[Demo](@FinalUnlock_bot)
+[Demo](https://t.me/FinalUnlock_bot)
 
 ## 📋 项目简介
 
@@ -182,6 +182,7 @@ MIT License - 自由使用，修改和分发
 
 
 **🎉 享受简单高效的FinalShell激活码生成体验！**
+
 
 
 
