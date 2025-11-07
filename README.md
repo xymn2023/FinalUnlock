@@ -178,10 +178,11 @@ MIT License - 自由使用，修改和分发
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=komari-monitor/komari,xymn2023/FinalUnlock&type=Date)](https://www.star-history.com/#komari-monitor/komari&xymn2023/FinalUnlock&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=xymn2023/FinalUnlock&type=date&legend=top-left)](https://www.star-history.com/#xymn2023/FinalUnlock&type=date&legend=top-left)
 
 
 **🎉 享受简单高效的FinalShell激活码生成体验！**
+
 
 
 
