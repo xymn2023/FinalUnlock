@@ -697,16 +697,19 @@ update_code() {
     # 备份配置和当前代码
     cp .env .env.backup 2>/dev/null || true
     cp bot.py bot.py.backup 2>/dev/null || true
+    cp manage.sh manage.sh.backup 2>/dev/null || true
     
     info "正在从GitHub下载最新代码..."
     msg "仓库地址: https://github.com/xymn2023/FinalUnlock"
     
-    # 下载文件列表
-    local files=("bot.py" "py.py" "requirements.txt" "manage.sh")
+    # 下载文件列表（manage.sh 可选，下载失败不中断）
+    local files=("bot.py" "py.py" "requirements.txt")
+    local optional_files=("manage.sh" "install.sh" "README.md")
     local base_url="https://raw.githubusercontent.com/xymn2023/FinalUnlock/main"
     local download_success=true
+    local has_critical_update=true
     
-    # 逐个下载文件
+    # 逐个下载必需文件
     for file in "${files[@]}"; do
         info "下载 $file..."
         if curl -f -s -L "$base_url/$file" > "${file}.new" 2>/dev/null; then
@@ -715,27 +718,60 @@ update_code() {
                 if ! grep -q "404" "${file}.new" && ! grep -q "Not Found" "${file}.new"; then
                     msg "✅ $file 下载成功"
                 else
-                    error "❌ $file 下载失败：文件不存在"
+                    error "❌ $file 下载失败：文件不存在（404）"
                     download_success=false
+                    has_critical_update=false
                 fi
             else
                 error "❌ $file 下载失败：文件为空"
                 download_success=false
+                has_critical_update=false
             fi
         else
             error "❌ $file 下载失败：网络错误"
             download_success=false
+            has_critical_update=false
         fi
     done
     
-    if [[ "$download_success" == true ]]; then
-        # 替换文件
+    # 下载可选文件（失败不影响更新）
+    for file in "${optional_files[@]}"; do
+        info "下载 $file（可选）..."
+        if curl -f -s -L "$base_url/$file" > "${file}.new" 2>/dev/null; then
+            if [[ -s "${file}.new" ]]; then
+                if ! grep -q "404" "${file}.new" && ! grep -q "Not Found" "${file}.new"; then
+                    msg "✅ $file 下载成功（可选）"
+                else
+                    warn "⚠️ $file 不存在，跳过"
+                    rm -f "${file}.new" 2>/dev/null || true
+                fi
+            else
+                warn "⚠️ $file 下载失败，跳过"
+                rm -f "${file}.new" 2>/dev/null || true
+            fi
+        else
+            warn "⚠️ $file 下载失败，跳过"
+            rm -f "${file}.new" 2>/dev/null || true
+        fi
+    done
+    
+    if [[ "$has_critical_update" == true ]]; then
+        # 替换必需文件
         info "替换文件..."
         for file in "${files[@]}"; do
             if [[ -f "${file}.new" ]]; then
                 mv "${file}.new" "$file"
                 [[ "$file" == "manage.sh" ]] && chmod +x "$file"
                 msg "✅ $file 已更新"
+            fi
+        done
+        
+        # 替换可选文件
+        for file in "${optional_files[@]}"; do
+            if [[ -f "${file}.new" ]]; then
+                mv "${file}.new" "$file"
+                [[ "$file" == "manage.sh" ]] && chmod +x "$file"
+                msg "✅ $file 已更新（可选）"
             fi
         done
         
@@ -757,22 +793,24 @@ update_code() {
             warn "⚠️ 虚拟环境不存在，跳过依赖更新"
         fi
         
-        msg "✅ 代码更新成功！"
+        msg "✅ 代码更新成功！正在重启服务..."
         
-        # 重启服务
+        # 重启服务（自动生效）
         restart_service
         
     else
-        warn "⚠️ 更新失败，恢复备份文件"
+        warn "⚠️ 必需文件更新失败，正在恢复..."
         # 清理失败的下载文件
         rm -f *.new 2>/dev/null || true
         # 恢复备份
         cp bot.py.backup bot.py 2>/dev/null || true
         cp .env.backup .env 2>/dev/null || true
+        warn "⚠️ 已恢复备份文件"
         error "❌ 代码更新失败，请检查网络连接或稍后重试"
     fi
     
-    msg "✅ 更新完成"
+    msg "按回车继续..."
+    read -r dummy
 }
 
 # 重新配置
